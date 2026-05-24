@@ -68,9 +68,7 @@ def save_data(file, data):
     with open(file, "w") as f:
         json.dump(data, f, indent=4)
 
-# =========================================
-# USER SECURITY
-# =========================================
+
 
 # =========================================
 # USER SECURITY
@@ -295,9 +293,6 @@ def cleanup_files():
 # =========================================
 # EXTRACT FRAMES
 # =========================================
-# =========================================
-# EXTRACT FRAMES
-# =========================================
 
 def extract_frames(video_path):
 
@@ -317,12 +312,9 @@ def extract_frames(video_path):
         "-i",
         video_path,
 
-        # SMART SLIDE DETECTION
+        # BETTER SLIDE DETECTION
         "-vf",
-        "select='gt(scene,0.08)',scale=1280:-1",
-
-        "-vsync",
-        "vfr",
+        "fps=1",
 
         "-q:v",
         "2",
@@ -343,13 +335,12 @@ def extract_frames(video_path):
 
     )
 
-    print("FFMPEG STDERR:")
     print(result.stderr)
 
     if result.returncode != 0:
 
         raise Exception(
-            "FFmpeg processing failed"
+            "FFmpeg extraction failed"
         )
 
     frames = sorted(
@@ -600,7 +591,6 @@ def serve_frame(filename):
     )
 
 
-
 # =========================================
 # VIDEO UPLOAD
 # =========================================
@@ -610,18 +600,13 @@ def upload():
 
     try:
 
-        print("UPLOAD STARTED")
-
         if "video" not in request.files:
 
             return jsonify({
-                "error":
-                "No file selected"
+                "error": "No video selected"
             }), 400
 
         file = request.files["video"]
-
-        print("FILE RECEIVED")
 
         file.seek(0, os.SEEK_END)
 
@@ -632,8 +617,7 @@ def upload():
         if size > 50 * 1024 * 1024:
 
             return jsonify({
-                "error":
-                "Max file size is 50MB"
+                "error": "Max upload size is 50MB"
             }), 400
 
         clean_frames()
@@ -645,11 +629,7 @@ def upload():
 
         file.save(video_path)
 
-        print("VIDEO SAVED")
-
         frames = extract_frames(video_path)
-
-        print("FRAMES:", frames)
 
         return jsonify({
             "slides": frames
