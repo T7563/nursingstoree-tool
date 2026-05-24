@@ -315,8 +315,12 @@ def extract_frames(video_path):
         "-i",
         video_path,
 
+        # SMART SLIDE DETECTION
         "-vf",
-        "fps=0.5,scale=1280:-1",
+        "select='gt(scene,0.08)',scale=1280:-1",
+
+        "-vsync",
+        "vfr",
 
         "-q:v",
         "2",
@@ -336,9 +340,6 @@ def extract_frames(video_path):
         text=True
 
     )
-
-    print("FFMPEG STDOUT:")
-    print(result.stdout)
 
     print("FFMPEG STDERR:")
     print(result.stderr)
