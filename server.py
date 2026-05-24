@@ -35,7 +35,7 @@ SUBS_FILE = "subscriptions.json"
 
 FREE_LIMIT = 2
 
-GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7m2A27yaTih-e1HigrRW2pKh7UMVwXyswCThLQRXOGMkCAaPj4le6gEazJDknXKDC/exec"
+GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzsazWQNzhZBnCcl56Phyg_rAMj1vCK0yGSQ88QZU28-romntg31L4YW-lBMg0kh4XxA/exec"
 
 # =========================================
 # CREATE FOLDERS
@@ -663,6 +663,7 @@ def generate_pdf():
             "error": str(e)
         }), 500
 
+
 # =========================================
 # SUBSCRIBE
 # =========================================
@@ -674,17 +675,16 @@ def subscribe():
 
         data = request.get_json()
 
-name = data.get("name")
+        name = data.get("name")
 
-email = data.get("email")
+        email = data.get("email")
 
-transaction_id = data.get("transaction_id")
+        transaction_id = data.get("transaction_id")
 
         if not name or not email or not transaction_id:
 
             return jsonify({
-                "error":
-                "All fields required"
+                "error": "All fields required"
             }), 400
 
         user_key = get_user_key(request)
@@ -697,12 +697,12 @@ transaction_id = data.get("transaction_id")
 
             "email": email,
 
-            "transaction_id":
-            transaction_id,
+            "transaction_id": transaction_id,
 
             "approved": False,
 
             "date": str(datetime.now())
+
         }
 
         save_data(SUBS_FILE, subs)
@@ -710,8 +710,7 @@ transaction_id = data.get("transaction_id")
         # SEND TO GOOGLE SHEET
         requests.post(
 
-          GOOGLE_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbz7m2A27yaTih-e1HigrRW2pKh7UMVwXyswCThLQRXOGMkCAaPj4le6gEazJDknXKDC/exec",
+            GOOGLE_SCRIPT_URL,
 
             json={
 
@@ -719,11 +718,9 @@ transaction_id = data.get("transaction_id")
 
                 "email": email,
 
-                "transaction_id":
-                transaction_id,
+                "transaction_id": transaction_id,
 
-                "user_id":
-                user_key
+                "user_id": user_key
 
             },
 
@@ -741,7 +738,9 @@ transaction_id = data.get("transaction_id")
     except Exception as e:
 
         return jsonify({
+
             "error": str(e)
+
         }), 500
 
 # =========================================
