@@ -289,7 +289,6 @@ def cleanup_files():
     except Exception as e:
 
         print("Cleanup error:", e)
-
 # =========================================
 # EXTRACT FRAMES
 # =========================================
@@ -305,43 +304,47 @@ def extract_frames(video_path):
 
     command = [
 
-        "ffmpeg",
+        FFMPEG_PATH,
 
         "-y",
 
         "-i",
         video_path,
 
-        # BETTER SLIDE DETECTION
         "-vf",
         "fps=1",
-
-        "-q:v",
-        "2",
 
         output_pattern
 
     ]
 
-    result = subprocess.run(
+    try:
 
-        command,
+        result = subprocess.run(
 
-        stdout=subprocess.PIPE,
+            command,
 
-        stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
 
-        text=True
+            stderr=subprocess.PIPE,
 
-    )
+            text=True,
 
-    print(result.stderr)
+            timeout=120
 
-    if result.returncode != 0:
-
-        raise Exception(
-            "FFmpeg extraction failed"
         )
+
+        print(result.stderr)
+
+        if result.returncode != 0:
+
+            raise Exception(
+                "FFmpeg extraction failed"
+            )
+
+    except Exception as e:
+
+        raise Exception(str(e))
 
     frames = sorted(
         os.listdir("frames")
@@ -350,7 +353,7 @@ def extract_frames(video_path):
     if len(frames) == 0:
 
         raise Exception(
-            "No slides detected"
+            "No slides extracted"
         )
 
     return frames
@@ -590,7 +593,6 @@ def serve_frame(filename):
         filename
     )
 
-
 # =========================================
 # VIDEO UPLOAD
 # =========================================
@@ -603,11 +605,20 @@ def upload():
         if "video" not in request.files:
 
             return jsonify({
-                "error": "No video selected"
+                "error":
+                "No video selected"
             }), 400
 
         file = request.files["video"]
 
+        if file.filename == "":
+
+            return jsonify({
+                "error":
+                "No file selected"
+            }), 400
+
+        # SIZE CHECK
         file.seek(0, os.SEEK_END)
 
         size = file.tell()
@@ -617,22 +628,38 @@ def upload():
         if size > 50 * 1024 * 1024:
 
             return jsonify({
-                "error": "Max upload size is 50MB"
+                "error":
+                "Max upload size is 50MB"
             }), 400
 
+        # CLEAN OLD FILES
         clean_frames()
 
+        uploads_folder = "uploads"
+
+        os.makedirs(
+            uploads_folder,
+            exist_ok=True
+        )
+
         video_path = os.path.join(
-            "uploads",
+            uploads_folder,
             "video.mp4"
         )
 
         file.save(video_path)
 
+        print("VIDEO SAVED")
+
+        # EXTRACT
         frames = extract_frames(video_path)
 
+        print("TOTAL FRAMES:", len(frames))
+
         return jsonify({
+
             "slides": frames
+
         })
 
     except Exception as e:
@@ -640,7 +667,9 @@ def upload():
         print("UPLOAD ERROR:", str(e))
 
         return jsonify({
+
             "error": str(e)
+
         }), 500
 # =========================================
 # GENERATE PDF

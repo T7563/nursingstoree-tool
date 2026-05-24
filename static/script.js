@@ -281,7 +281,7 @@ clearInterval(interval);
 progressContainer.style.display =
 "none";
 
-alert("Upload failed!");
+alert(err);
 
 }
 
@@ -381,17 +381,11 @@ Array.from(selected)
 
 );
 
-let data = await response.json();
+let text = await response.text();
 
-clearInterval(interval);
+console.log(text);
 
-if(data.error){
-
-alert(data.error);
-
-return;
-
-}
+let data = JSON.parse(text);
 
 progressBar.style.width =
 "100%";
