@@ -6,3 +6,4 @@ requests
 fpdf
 Pillow
 pdf2image
+gunicorn==21.2.0

@@ -309,7 +309,7 @@ def extract_frames(video_path):
         "-i", video_path,
 
         # EXTRACT 1 FRAME PER SECOND
-        "-vf", "fps=1,scale=1280:-1",
+        "-vf", "fps=0.5,scale=1280:-1",
 
         "-q:v", "2",
 
@@ -571,6 +571,7 @@ def serve_frame(filename):
         "frames",
         filename
     )
+    
 
 # =========================================
 # VIDEO UPLOAD
@@ -581,6 +582,8 @@ def upload():
 
     try:
 
+        print("UPLOAD STARTED")
+
         if "video" not in request.files:
 
             return jsonify({
@@ -588,6 +591,8 @@ def upload():
             }), 400
 
         file = request.files["video"]
+
+        print("FILE RECEIVED")
 
         # FILE SIZE LIMIT
         file.seek(0, os.SEEK_END)
@@ -609,7 +614,11 @@ def upload():
 
         file.save(video_path)
 
+        print("VIDEO SAVED")
+
         frames = extract_frames(video_path)
+
+        print("FRAMES EXTRACTED:", frames)
 
         return jsonify({
             "slides": frames
@@ -617,10 +626,11 @@ def upload():
 
     except Exception as e:
 
+        print("UPLOAD ERROR:", str(e))
+
         return jsonify({
             "error": str(e)
         }), 500
-
 # =========================================
 # GENERATE PDF
 # =========================================
