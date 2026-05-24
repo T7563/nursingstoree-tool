@@ -782,6 +782,7 @@ def subscribe():
 
         }), 500
 
+
 # =========================================
 # DOWNLOAD PDF
 # =========================================
@@ -800,7 +801,19 @@ def download():
             "error": "PDF not found"
         }), 404
 
-    # START CLEANUP THREAD
+    response = send_file(
+
+        pdf_path,
+
+        as_attachment=True,
+
+        download_name="slides.pdf",
+
+        mimetype="application/pdf"
+
+    )
+
+    # CLEANUP AFTER DOWNLOAD
     cleanup_thread = threading.Thread(
         target=cleanup_files
     )
@@ -809,11 +822,7 @@ def download():
 
     cleanup_thread.start()
 
-    return send_file(
-        pdf_path,
-        as_attachment=True,
-        download_name="slides.pdf"
-    )
+    return response
 
 # =========================================
 # START SERVER

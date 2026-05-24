@@ -288,6 +288,7 @@ alert("Upload failed!");
 }
 
 
+
 // ======================================
 // DOWNLOAD PDF
 // ======================================
@@ -401,9 +402,27 @@ progressBar.innerHTML =
 progressText.innerHTML =
 "Downloading PDF...";
 
-window.location = data.pdf;
+
+// ===================================
+// FORCE DOWNLOAD
+// ===================================
+
+let link =
+document.createElement("a");
+
+link.href = data.pdf;
+
+link.download = "slides.pdf";
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
 
 }catch(err){
+
+console.log(err);
 
 alert("PDF generation failed!");
 
