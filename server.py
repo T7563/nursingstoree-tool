@@ -35,7 +35,7 @@ SUBS_FILE = "subscriptions.json"
 
 FREE_LIMIT = 2
 
-GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzsazWQNzhZBnCcl56Phyg_rAMj1vCK0yGSQ88QZU28-romntg31L4YW-lBMg0kh4XxA/exec"
+GOGOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7m2A27yaTih-e1HigrRW2pKh7UMVwXyswCThLQRXOGMkCAaPj4le6gEazJDknXKDC/exec"
 
 # =========================================
 # CREATE FOLDERS
