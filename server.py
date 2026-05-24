@@ -72,6 +72,10 @@ def save_data(file, data):
 # USER SECURITY
 # =========================================
 
+# =========================================
+# USER SECURITY
+# =========================================
+
 def get_user_key(request):
 
     user_id = request.headers.get(
@@ -79,9 +83,7 @@ def get_user_key(request):
         "free_user"
     )
 
-    user_ip = request.remote_addr
-
-    return user_id + "_" + user_ip
+    return user_id
 
 # =========================================
 # GOOGLE SHEET UPDATE
