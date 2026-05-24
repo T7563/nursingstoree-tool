@@ -26,19 +26,221 @@ let slides = [];
 
 async function uploadVideo(){
 
-    selected.clear();
+selected.clear();
 
-    let fileInput =
-    document.getElementById("videoFile");
+let fileInput =
+document.getElementById("videoFile");
 
-    let file = fileInput.files[0];
+let file = fileInput.files[0];
 
-    if(!file){
+if(!file){
 
-        alert("Please select video file!");
+alert("Please select video!");
 
-        return;
-    }
+return;
+
+}
+
+let progressContainer =
+document.getElementById(
+"progressContainer"
+);
+
+let progressBar =
+document.getElementById(
+"progressBar"
+);
+
+let progressText =
+document.getElementById(
+"progressText"
+);
+
+progressContainer.style.display =
+"block";
+
+progressBar.style.width = "0%";
+
+progressBar.innerHTML = "0%";
+
+progressText.innerHTML =
+"Uploading video...";
+
+let formData = new FormData();
+
+formData.append("video", file);
+
+
+// ===================================
+// FAKE PROGRESS
+// ===================================
+
+let percent = 0;
+
+let interval = setInterval(()=>{
+
+if(percent < 90){
+
+percent += 5;
+
+progressBar.style.width =
+percent + "%";
+
+progressBar.innerHTML =
+percent + "%";
+
+if(percent < 50){
+
+progressText.innerHTML =
+"Uploading video...";
+
+}else{
+
+progressText.innerHTML =
+"Extracting slides...";
+
+}
+
+}
+
+},800);
+
+
+try{
+
+let response = await fetch("/upload",{
+
+method:"POST",
+
+headers:{
+"user-id":
+localStorage.getItem("userId")
+},
+
+body:formData
+
+});
+
+clearInterval(interval);
+
+let data = await response.json();
+
+if(data.error){
+
+alert(data.error);
+
+progressContainer.style.display =
+"none";
+
+return;
+
+}
+
+progressBar.style.width = "100%";
+
+progressBar.innerHTML = "100%";
+
+progressText.innerHTML =
+"Slides extracted successfully ✅";
+
+slides = data.slides;
+
+showSlides();
+
+}catch(err){
+
+console.log(err);
+
+clearInterval(interval);
+
+progressContainer.style.display =
+"none";
+
+alert("Upload failed");
+
+}
+
+}
+
+// ===================================
+// RESPONSE
+// ===================================
+
+xhr.onreadystatechange = function(){
+
+if(xhr.readyState === 4){
+
+if(xhr.status === 200){
+
+progressBar.style.width =
+"100%";
+
+progressBar.innerHTML =
+"100%";
+
+progressText.innerHTML =
+"Slides extracted successfully ✅";
+
+let data =
+JSON.parse(xhr.responseText);
+
+slides = data.slides;
+
+showSlides();
+
+}else{
+
+try{
+
+let err =
+JSON.parse(xhr.responseText);
+
+alert(err.error);
+
+}catch{
+
+alert("Upload failed");
+
+}
+
+}
+
+}
+
+};
+
+xhr.send(formData);
+
+// ===================================
+// FAKE EXTRACTION PROGRESS
+// ===================================
+
+let fake = 50;
+
+let interval = setInterval(()=>{
+
+if(fake >= 95){
+
+clearInterval(interval);
+
+return;
+
+}
+
+fake += 3;
+
+progressBar.style.width =
+fake + "%";
+
+progressBar.innerHTML =
+fake + "%";
+
+progressText.innerHTML =
+"Extracting slides...";
+
+},1000);
+
+}
 
     // LOADING UI
     document.getElementById("gallery").innerHTML = `
@@ -104,9 +306,6 @@ async function uploadVideo(){
         ).innerHTML = "";
 
     }
-
-}
-
 
 // ======================================
 // SHOW SLIDES
@@ -257,66 +456,122 @@ function clearAll(){
 // ======================================
 // DOWNLOAD PDF
 // ======================================
-
 async function downloadPDF(){
 
-    if(selected.size === 0){
+if(selected.size === 0){
 
-        alert("Please select slides first!");
+alert("Select slides first!");
 
-        return;
-    }
+return;
 
-    try{
+}
 
-        let response = await fetch(
-            "/generate_pdf",
-            {
+let progressContainer =
+document.getElementById(
+"progressContainer"
+);
 
-                method:"POST",
+let progressBar =
+document.getElementById(
+"progressBar"
+);
 
-                headers:{
+let progressText =
+document.getElementById(
+"progressText"
+);
 
-                    "Content-Type":
-                    "application/json",
+progressContainer.style.display =
+"block";
 
-                    "user-id":
-                    localStorage.getItem(
-                        "userId"
-                    )
+progressBar.style.width = "0%";
 
-                },
+progressBar.innerHTML = "0%";
 
-                body:JSON.stringify({
+progressText.innerHTML =
+"Generating PDF...";
 
-                    slides:
-                    Array.from(selected)
+let fake = 0;
 
-                })
+let interval = setInterval(()=>{
 
-            }
-        );
+if(fake >= 90){
 
-        let data = await response.json();
+clearInterval(interval);
 
-        // ERROR
-        if(data.error){
+return;
 
-            alert(data.error);
+}
 
-            return;
-        }
+fake += 5;
 
-        // DOWNLOAD
-        window.location = data.pdf;
+progressBar.style.width =
+fake + "%";
 
-    }catch(err){
+progressBar.innerHTML =
+fake + "%";
 
-        console.log(err);
+},500);
 
-        alert("PDF generation failed!");
+try{
 
-    }
+let response = await fetch(
+"/generate_pdf",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"user-id":
+localStorage.getItem(
+"userId"
+)
+
+},
+
+body:JSON.stringify({
+
+slides:
+Array.from(selected)
+
+})
+
+}
+
+);
+
+let data = await response.json();
+
+clearInterval(interval);
+
+if(data.error){
+
+alert(data.error);
+
+return;
+
+}
+
+progressBar.style.width =
+"100%";
+
+progressBar.innerHTML =
+"100%";
+
+progressText.innerHTML =
+"Downloading PDF...";
+
+window.location = data.pdf;
+
+}catch(err){
+
+alert("PDF generation failed");
+
+}
 
 }
 
