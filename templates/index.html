@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nursing Storee - Slide Extractor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/static/style.css">
+
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    font-family:'Poppins',sans-serif;
+    background:#050505;
+    color:white;
+}
+
+.bg1{
+    position:fixed;
+    width:700px;
+    height:700px;
+    background:radial-gradient(circle,rgba(255,0,0,0.18),transparent 70%);
+    top:-200px;
+    right:-200px;
+    z-index:-1;
+}
+
+.bg2{
+    position:fixed;
+    width:700px;
+    height:700px;
+    background:radial-gradient(circle,rgba(255,0,0,0.1),transparent 70%);
+    bottom:-200px;
+    left:-200px;
+    z-index:-1;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.hero{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.logo{
+    font-size:55px;
+    font-weight:700;
+    color:#ff1a1a;
+    text-shadow:0 0 20px rgba(255,0,0,0.6);
+}
+
+.subtitle{
+    margin-top:10px;
+    font-size:22px;
+    color:#ddd;
+}
+
+.box{
+    background:linear-gradient(145deg,#111,#191919);
+    border:1px solid rgba(255,0,0,0.15);
+    border-radius:30px;
+    padding:40px;
+    box-shadow:
+    0 0 30px rgba(255,0,0,0.12),
+    0 10px 40px rgba(0,0,0,0.7);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:38px;
+    color:white;
+}
+
+.upload-area{
+    text-align:center;
+    padding:40px;
+    border:2px dashed rgba(255,0,0,0.3);
+    border-radius:25px;
+    background:#101010;
+}
+
+input[type=file]{
+    color:white;
+    margin-top:15px;
+}
+
+.btn-group{
+    margin-top:30px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+}
+
+button{
+    padding:16px 28px;
+    border:none;
+    border-radius:15px;
+    background:linear-gradient(135deg,#ff0000,#a80000);
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 0 15px rgba(255,0,0,0.35);
+}
+
+button:hover{
+    transform:translateY(-4px);
+    box-shadow:0 0 25px rgba(255,0,0,0.6);
+}
+
+#gallery{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+#gallery img{
+    width:100%;
+    border-radius:18px;
+    border:3px solid rgba(255,0,0,0.15);
+    transition:0.3s;
+}
+
+#gallery img:hover{
+    transform:scale(1.03);
+    border-color:#ff1a1a;
+    box-shadow:0 0 20px rgba(255,0,0,0.4);
+}
+
+.download-btn{
+    margin-top:40px;
+    width:100%;
+    font-size:24px;
+    padding:20px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:40px;
+    color:#777;
+}
+
+@media(max-width:768px){
+
+    .logo{
+        font-size:38px;
+    }
+
+    h2{
+        font-size:28px;
+    }
+
+    button{
+        width:100%;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="bg1"></div>
+<div class="bg2"></div>
+
+<div class="container">
+
+<div class="hero">
+
+<div class="logo">
+Nursing Storee
+</div>
+
+<div class="subtitle">
+Royal Video To PDF Converter
+</div>
+
+</div>
+
+<div class="box">
+
+<h2>
+🎥 Upload Video → Extract Slides
+</h2>
+
+<div class="upload-area">
+
+<h3>Upload Your Lecture Video</h3>
+
+<br>
+
+<input
+type="file"
+id="videoFile"
+accept="video/*">
+
+</div>
+
+<div class="btn-group">
+
+<button onclick="uploadVideo()">
+⚡ Upload & Extract
+</button>
+
+<button onclick="selectAll()">
+✅ Select All
+</button>
+
+<button onclick="clearAll()">
+❌ Clear All
+</button>
+
+<button onclick="window.location='/premium'">
+👑 Upgrade to Premium
+</button>
+
+</div>
+
+<div id="gallery"></div>
+
+<button class="download-btn" onclick="downloadPDF()">
+📄 Download PDF
+</button>
+
+</div>
+
+<div class="footer">
+
+© 2026 Nursing Storee • Tool
+
+</div>
+
+</div>
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
